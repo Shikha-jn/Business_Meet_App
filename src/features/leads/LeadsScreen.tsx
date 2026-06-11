@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, View, StyleSheet } from 'react-native';
+import {ScrollView, View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/ScreenHeader';
 import StatCard from '../../components/StatCard';
 import SearchBar from '../../components/SearchBar';
