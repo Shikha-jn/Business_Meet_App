@@ -5,6 +5,7 @@ import Badge from './Badge';
 import Icon from './Icon';
 import Colors from '../theme/colors';
 import { Lead } from '../features/leads/types';
+import { LeadRequirement } from '../features/leadsReq/types';
 
 // export interface LeadItem {
 //   id: string;
@@ -26,7 +27,7 @@ import { Lead } from '../features/leads/types';
 // }
 
 interface LeadCardProps {
-  item: Lead;
+  item: any; // Lead | LeadRequirement - kept as any to avoid import issues, can be refactored later
   /** Set to true on Requirements screen to hide likes/mails, show responses */
   isRequirement?: boolean;
   onView?: () => void;
