@@ -1,0 +1,40 @@
+export interface Profile {
+  _id: number;
+  email: string;
+  companyName: string;
+  category: string;
+  companyType: string;
+  industry: string;
+  businessDescription: string;
+  yearEstablished: number;
+  employeeCount: string;
+  bio: string;
+  about: string;
+  websiteLinks: string[];
+  contactPersonName: string;
+  phone: string;
+  website: string;
+  servicesOffered: string[];
+  profilePhoto: string | null;
+  profilePhotoPublicId: string | null;
+  verificationStatus: string;
+  isActive: boolean;
+  subscriptionPlan: string;
+  profileCompleteness: number;
+  loginCount: number;
+  averageRating: string;
+  totalRatings: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  lastLoginAt: string;
+  address: Address;
+};
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+};

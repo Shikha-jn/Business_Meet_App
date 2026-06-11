@@ -1,10 +1,14 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/ScreenHeader';
 import Card from '../../components/Card';
 import Icon from '../../components/Icon';
 import Colors from '../../theme/colors';
 import shared from '../../theme/styles';
+import { profileService } from './service';
+import {Profile} from './types';
+import { getData } from '../../utils/asyncStorage';
 
 interface ProfileField {
   label: string;
@@ -24,7 +28,33 @@ const TwoColGrid: React.FC<{ fields: ProfileField[] }> = ({ fields }) => (
   </View>
 );
 
-const MyProfileScreen: React.FC = () => (
+const MyProfileScreen = () => {
+const [profile, setProfile] = useState<Profile | null>(null);
+const [token, setToken] = useState<string>('');
+
+var tokenData = getData('token').then((data) => {
+  if (data) {
+    setToken(data);
+  };
+});
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data: Profile = await profileService.getProfile(token);
+
+        console.log('Profile Data:', data);
+
+        setProfile(data);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  return(
   <SafeAreaView style={shared.screen}>
     <ScreenHeader
       title="My Profile"
@@ -59,12 +89,18 @@ const MyProfileScreen: React.FC = () => (
       <Card title="Basic Information">
         <TwoColGrid
           fields={[
-            { label: 'Company Name *', value: 'Test Company' },
-            { label: 'Category *',     value: 'Technology' },
-            { label: 'Company Type',   value: 'Sole Proprietorship' },
-            { label: 'Industry',       value: 'Software Development' },
-            { label: 'Year Established', value: '2024' },
-            { label: 'Employee Count', value: '1–10' },
+            // { label: 'Company Name *', value: profile?.companyName || 'Test Company' },
+            // { label: 'Category *',     value: profile?.category || 'Technology' },
+            // { label: 'Company Type',   value: profile?.companyType || 'Sole Proprietorship' },
+            // { label: 'Industry',       value: profile?.industry || 'Software Development' },
+            // { label: 'Year Established', value: profile?.yearEstablished?.toString() || '2024' },
+            // { label: 'Employee Count', value: profile?.employeeCount || '1–10' },
+            { label: 'Company Name *', value: profile?.companyName || '' },
+            { label: 'Category *',     value: profile?.category || '' },
+            { label: 'Company Type',   value: profile?.companyType || '' },
+            { label: 'Industry',       value: profile?.industry || '' },
+            { label: 'Year Established', value: profile?.yearEstablished?.toString() || '' },
+            { label: 'Employee Count', value: profile?.employeeCount || '' },
           ]}
         />
         <View style={[styles.field, { width: '100%', borderTopWidth: 1, borderTopColor: Colors.border, paddingTop: 10 }]}>
@@ -77,16 +113,17 @@ const MyProfileScreen: React.FC = () => (
       <Card title="Contact Information">
         <TwoColGrid
           fields={[
-            { label: 'Email',          value: 'testcompany@gmail.com' },
-            { label: 'Phone',          value: '9876543210' },
-            { label: 'Contact Person', value: 'Test Company' },
-            { label: 'Address',        value: 'Gandhi Nagar, Itarsi, MP 461111, India' },
+            { label: 'Email',          value: profile?.email || '' },
+            { label: 'Phone',          value: profile?.phone || '' },
+            { label: 'Contact Person', value: profile?.contactPersonName || '' },
+            { label: 'Address',        value: profile?.address ? `${profile.address.street}, ${profile.address.city}, ${profile.address.state} ${profile.address.pincode}, ${profile.address.country}` : '' },
           ]}
         />
       </Card>
     </ScrollView>
   </SafeAreaView>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   photoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 14 },

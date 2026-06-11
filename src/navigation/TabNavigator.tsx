@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from '@react-native-vector-icons/ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import DashboardScreen from '../features/dashboard/DashboardScreen';
 import LeadsScreen from '../features/leads/LeadsScreen';
@@ -38,7 +38,7 @@ const MainTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name="home"
+              name="home-outline"
               focused={focused}
             />
           ),
@@ -51,7 +51,7 @@ const MainTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name="leads"
+              name="filter-circle-outline"
               focused={focused}
             />
           ),
@@ -64,7 +64,7 @@ const MainTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name="requirements"
+              name="create-outline"
               focused={focused}
             />
           ),
@@ -77,7 +77,7 @@ const MainTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name="communities"
+              name="people-outline"
               focused={focused}
             />
           ),
@@ -90,7 +90,7 @@ const MainTabNavigator = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon
-              name="profile"
+              name="person-outline"
               focused={focused}
             />
           ),
