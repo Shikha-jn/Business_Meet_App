@@ -1,39 +1,65 @@
-import React, { useState } from 'react';
-import {ScrollView, View, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {ScrollView, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/ScreenHeader';
 import StatCard from '../../components/StatCard';
 import SearchBar from '../../components/SearchBar';
 import DropdownPill from '../../components/DropdownPill';
-import LeadCard, { LeadItem } from '../../components/LeadCard';
+import LeadCard from '../../components/LeadCard';
 import Card from '../../components/Card';
 import Colors from '../../theme/colors';
 import shared from '../../theme/styles';
+import { getMyLeads } from './service';
+import {Lead} from './types';
 
-const LEADS: LeadItem[] = [
-  {
-    id: '1',
-    title: 'testing',
-    description: 'testing',
-    priority: 'HIGH',
-    timeline: 'within week',
-    categories: ['Media & Entertainment', 'Service Required'],
-    budget: 'INR 200 – 2,199',
-    location: 'Remote',
-    views: 5,
-    likes: 0,
-    comments: 0,
-    mails: 0,
-    daysLeft: 90,
-    status: 'Active',
-    visibility: 'Public',
-  },
-];
+// const LEADS: LeadItem[] = [
+//   {
+//     id: '1',
+//     title: 'testing',
+//     description: 'testing',
+//     priority: 'HIGH',
+//     timeline: 'within week',
+//     categories: ['Media & Entertainment', 'Service Required'],
+//     budget: 'INR 200 – 2,199',
+//     location: 'Remote',
+//     views: 5,
+//     likes: 0,
+//     comments: 0,
+//     mails: 0,
+//     daysLeft: 90,
+//     status: 'Active',
+//     visibility: 'Public',
+//   },
+// ];
 
 const MyLeadsScreen: React.FC = () => {
   const [search, setSearch] = useState('');
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const filtered = LEADS.filter(l =>
+  const fetchLeads = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getMyLeads();
+
+      setLeads(data.leads);
+    } catch (error) {
+      console.log('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLeads();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" />;
+  }
+
+  const filtered = leads.filter(l =>
     l.title.toLowerCase().includes(search.toLowerCase()),
   );
 
@@ -48,12 +74,12 @@ const MyLeadsScreen: React.FC = () => {
       <ScrollView contentContainerStyle={shared.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Stats */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.statsRow}>
-          <StatCard label="Total Leads"  value={LEADS.length}                                  color={Colors.blue} />
-          <StatCard label="Active Leads" value={LEADS.filter(l => l.status === 'Active').length} color={Colors.green} />
-          <StatCard label="Total Views"  value={LEADS.reduce((s, l) => s + l.views, 0)}         color={Colors.purple} />
-          <StatCard label="Total Likes"  value={LEADS.reduce((s, l) => s + (l.likes ?? 0), 0)}  color={Colors.blue} />
-          <StatCard label="Comments"     value={LEADS.reduce((s, l) => s + l.comments, 0)}      color={Colors.blue} />
-          <StatCard label="Inquiries"    value={LEADS.reduce((s, l) => s + (l.mails ?? 0), 0)}  color={Colors.orange} />
+          <StatCard label="Total Leads"  value={leads.length}                                  color={Colors.blue} />
+          <StatCard label="Active Leads" value={leads.filter(l => l.isActive === true).length} color={Colors.green} />
+          <StatCard label="Total Views"  value={leads.reduce((s, l) => s + l.views, 0)}         color={Colors.purple} />
+          <StatCard label="Total Likes"  value={leads.reduce((s, l) => s + (l.likeCount ?? 0), 0)}  color={Colors.blue} />
+          <StatCard label="Comments"     value={leads.reduce((s, l) => s + l.commentCount, 0)}      color={Colors.blue} />
+          <StatCard label="Inquiries"    value={leads.reduce((s, l) => s + (l.inquiryCount ?? 0), 0)}  color={Colors.orange} />
         </ScrollView>
 
         {/* Search + Filters */}
@@ -69,7 +95,7 @@ const MyLeadsScreen: React.FC = () => {
         {/* Lead list */}
         {filtered.map(lead => (
           <LeadCard
-            key={lead.id}
+            key={lead._id}
             item={lead}
             onView={() => { /* navigate to lead detail */ }}
             onEdit={() => { /* navigate to edit */ }}

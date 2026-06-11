@@ -6,14 +6,17 @@ const api = axios.create({
   timeout: 10000,
 });
 
-api.interceptors.request.use(async config => {
-  const token = await getData('token'); // get from AsyncStorage/Zustand
+api.interceptors.request.use(
+  async config => {
+    const token = await getData('token');
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  error => Promise.reject(error),
+);
 
 export default api;

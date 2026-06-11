@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ScreenHeader from '../../components/ScreenHeader';
 import Card from '../../components/Card';
@@ -8,6 +8,9 @@ import Badge from '../../components/Badge';
 import Icon from '../../components/Icon';
 import Colors from '../../theme/colors';
 import shared from '../../theme/styles';
+import { useEffect, useState } from 'react';
+import { CompanyProfile } from './types';
+import { getCompanyProfile } from './service';
 
 const QuickCard = ({
   iconBg,
@@ -31,54 +34,78 @@ const QuickCard = ({
   </TouchableOpacity>
 );
 
-const DashboardScreen: React.FC = () => (
-  <SafeAreaView style={shared.screen}>
-    <ScreenHeader
-      title="Test Company"
-      subtitle="Welcome back,"
-      hint="6/10/2026"
-      showBell
-    />
+const DashboardScreen = () => {
+  const [profile, setProfile] = useState<CompanyProfile | null>(null);
 
-    <ScrollView contentContainerStyle={shared.scrollContent} showsVerticalScrollIndicator={false}>
-      {/* Quick stat tiles */}
-      <View style={styles.quickGrid}>
-        <QuickCard iconBg={Colors.greenLight} iconName="shield" iconColor={Colors.green} label="Verification">
-          <Badge label="✓ Verified" variant="green" />
-        </QuickCard>
+  const [loading, setLoading] = useState(false);
 
-        <QuickCard iconBg="#EEF2FF" iconName="chart" iconColor={Colors.purple} label="Profile">
-          <Text style={[styles.quickValue, { color: Colors.green }]}>68%</Text>
-        </QuickCard>
+  const fetchProfile = async () => {
+    try {
+      setLoading(true);
 
-        <QuickCard iconBg="#FDF4FF" iconName="users" iconColor={Colors.purple} label="Subscription Plan">
-          <Text style={[styles.quickValue, { color: Colors.text }]}>Free</Text>
-        </QuickCard>
+      const data = await getCompanyProfile();
 
-        <QuickCard iconBg="#FFF7ED" iconName="building" iconColor={Colors.orange} label="All Companies">
-          <Text style={[styles.quickValue, { color: Colors.orange, fontSize: 12 }]}>View & Rate</Text>
-        </QuickCard>
-      </View>
+      setProfile(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      {/* Company Information */}
-      <Card title="Company Information">
-        <InfoRow icon="building" label="Company Type"       value="Sole Proprietorship" />
-        <InfoRow icon="users"   label="Industry"            value="Software Development" />
-        <InfoRow icon="calendar"label="Year Established"    value="2024" />
-        <InfoRow icon="users"   label="Employee Count"      value="1–10" />
-        <InfoRow icon="message" label="Business Description" value="For testing purpose" isLast />
-      </Card>
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-      {/* Contact Information */}
-      <Card title="Contact Information">
-        <InfoRow icon="mail"     label="Email"          value="testcompany@gmail.com" />
-        <InfoRow icon="phone"    label="Phone"          value="9876543210" />
-        <InfoRow icon="person"   label="Contact Person" value="Test Company" />
-        <InfoRow icon="location" label="Address"        value="Gandhi Nagar, Itarsi, Madhya Pradesh 461111, India" isLast />
-      </Card>
-    </ScrollView>
-  </SafeAreaView>
-);
+  return (
+    <SafeAreaView style={shared.screen}>
+      <ScreenHeader
+        title={profile?.companyName || ""}
+        subtitle="Welcome back,"
+        hint={profile?.lastLoginAt || ''}
+        showBell
+      />
+
+      <ScrollView contentContainerStyle={shared.scrollContent} showsVerticalScrollIndicator={false}>
+        {/* Quick stat tiles */}
+        <View style={styles.quickGrid}>
+          <QuickCard iconBg={Colors.greenLight} iconName="shield" iconColor={Colors.green} label="Verification">
+            <Badge label="✓ Verified" variant="green" />
+          </QuickCard>
+
+          <QuickCard iconBg="#EEF2FF" iconName="chart" iconColor={Colors.purple} label="Profile">
+            <Text style={[styles.quickValue, { color: Colors.green }]}>68%</Text>
+          </QuickCard>
+
+          <QuickCard iconBg="#FDF4FF" iconName="users" iconColor={Colors.purple} label="Subscription Plan">
+            <Text style={[styles.quickValue, { color: Colors.text }]}>Free</Text>
+          </QuickCard>
+
+          <QuickCard iconBg="#FFF7ED" iconName="building" iconColor={Colors.orange} label="All Companies">
+            <Text style={[styles.quickValue, { color: Colors.orange, fontSize: 12 }]}>View & Rate</Text>
+          </QuickCard>
+        </View>
+
+        {/* Company Information */}
+        <Card title="Company Information">
+          <InfoRow icon="building" label="Company Type" value={profile?.companyType || ''} />
+          <InfoRow icon="users" label="Industry" value={profile?.industry || ''} />
+          <InfoRow icon="calendar" label="Year Established" value={profile?.yearEstablished || ''} />
+          <InfoRow icon="users" label="Employee Count" value={profile?.employeeCount || ''} />
+          <InfoRow icon="message" label="Business Description" value={profile?.businessDescription || ''} isLast />
+        </Card>
+
+        {/* Contact Information */}
+        <Card title="Contact Information">
+          <InfoRow icon="mail" label="Email" value={profile?.email || ''} />
+          <InfoRow icon="phone" label="Phone" value={profile?.phone || ''} />
+          <InfoRow icon="person" label="Contact Person" value={profile?.contactPersonName || ''} />
+          <InfoRow icon="location" label="Address" value={profile?.address || ''} isLast />
+        </Card>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 14 },

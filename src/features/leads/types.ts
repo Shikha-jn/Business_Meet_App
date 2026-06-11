@@ -6,6 +6,8 @@ export interface Lead {
   leadType: string;
   timeline: string;
   priority: string;
+  isActive: boolean;
+  isPublic: boolean;
 
   requirements: string[];
   tags: string[];

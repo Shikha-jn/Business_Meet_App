@@ -6,7 +6,7 @@ import Colors from '../theme/colors';
 interface InfoRowProps {
   icon: string;
   label: string;
-  value: string;
+  value: any;
   isLast?: boolean;
 }
 

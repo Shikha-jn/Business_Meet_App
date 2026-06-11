@@ -4,28 +4,29 @@ import Tag from './Tag';
 import Badge from './Badge';
 import Icon from './Icon';
 import Colors from '../theme/colors';
+import { Lead } from '../features/leads/types';
 
-export interface LeadItem {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'HIGH' | 'MEDIUM' | 'LOW';
-  timeline: string;
-  categories: string[];
-  budget: string;
-  location: string;
-  views: number;
-  likes?: number;
-  comments: number;
-  mails?: number;
-  responses?: number;
-  daysLeft: number;
-  status: string;
-  visibility?: string;
-}
+// export interface LeadItem {
+//   id: string;
+//   title: string;
+//   description: string;
+//   priority: 'HIGH' | 'MEDIUM' | 'LOW';
+//   timeline: string;
+//   categories: string[];
+//   budget: string;
+//   location: string;
+//   views: number;
+//   likes?: number;
+//   comments: number;
+//   mails?: number;
+//   responses?: number;
+//   daysLeft: number;
+//   status: string;
+//   visibility?: string;
+// }
 
 interface LeadCardProps {
-  item: LeadItem;
+  item: Lead;
   /** Set to true on Requirements screen to hide likes/mails, show responses */
   isRequirement?: boolean;
   onView?: () => void;
@@ -61,37 +62,35 @@ const LeadCard: React.FC<LeadCardProps> = ({
 
     {/* Category tags */}
     <View style={styles.tagRow}>
-      {item.categories.map(cat => (
-        <Tag key={cat} label={cat} />
-      ))}
+        <Tag label={item.category} />
     </View>
 
     {/* Budget */}
-    <Text style={styles.budget}>{item.budget}</Text>
+    <Text style={styles.budget}>{item.budget.currency} {item.budget.min} - {item.budget.max}</Text>
 
     {/* Location */}
     <View style={styles.locationRow}>
       <Icon name="location" size={12} color={Colors.sub} />
-      <Text style={styles.locationText}>{item.location}</Text>
+      <Text style={styles.locationText}>{item.location.isRemote? 'Remote' : ''}</Text>
     </View>
 
     {/* Footer: engagement + status */}
     <View style={styles.footer}>
       <View style={styles.engRow}>
         <Text style={styles.engItem}><Icon name="eye" size={12} color={Colors.purple} /> {item.views}</Text>
-        {!isRequirement && <Text style={styles.engItem}><Icon name="thumb" size={12} color={Colors.green} /> {item.likes ?? 0}</Text>}
-        <Text style={styles.engItem}><Icon name="comment" size={12} color={Colors.sub} /> {isRequirement ? item.responses ?? 0 : item.comments}</Text>
-        {!isRequirement && <Text style={styles.engItem}><Icon name="mail" size={12} color={Colors.orange} /> {item.mails ?? 0}</Text>}
+        {!isRequirement && <Text style={styles.engItem}><Icon name="thumb" size={12} color={Colors.green} /> {item.likeCount ?? 0}</Text>}
+        <Text style={styles.engItem}><Icon name="comment" size={12} color={Colors.sub} /> {isRequirement ? item.responseCount ?? 0 : item.commentCount}</Text>
+        {!isRequirement && <Text style={styles.engItem}><Icon name="mail" size={12} color={Colors.orange} /> {item.contactInfo.email ?? 0}</Text>}
       </View>
       <View style={styles.statusRow}>
-        <Badge label={item.status} variant="green" />
-        {item.visibility ? <Badge label={item.visibility} variant="blue" /> : null}
+        <Badge label={item.isActive? 'Active' : ''} variant="green" />
+        {item.isPublic ? <Badge label={item.isPublic? 'Public' : ''} variant="blue" /> : null}
       </View>
     </View>
 
     {/* Days left */}
     <Text style={styles.daysLeft}>
-      <Icon name="calendar" size={11} color={Colors.sub} /> {item.daysLeft} days left
+      <Icon name="calendar" size={11} color={Colors.sub} /> {item.daysRemaining} days left
     </Text>
 
     {/* Actions */}

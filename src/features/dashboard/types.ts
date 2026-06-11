@@ -1,5 +1,20 @@
-export interface Profile {
-  _id: number;
+export interface LegalDetails {
+  gstNumber: string;
+  panNumber: string;
+  cinNumber: string;
+  msmeNumber: string;
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+}
+
+export interface CompanyProfile {
+  _id: string;
   email: string;
   companyName: string;
   category: string;
@@ -8,33 +23,38 @@ export interface Profile {
   businessDescription: string;
   yearEstablished: number;
   employeeCount: string;
+
   bio: string;
   about: string;
+
   websiteLinks: string[];
+  servicesOffered: string[];
+
   contactPersonName: string;
   phone: string;
   website: string;
-  servicesOffered: string[];
+
   profilePhoto: string | null;
   profilePhotoPublicId: string | null;
+
   verificationStatus: string;
   isActive: boolean;
   subscriptionPlan: string;
+
   profileCompleteness: number;
   loginCount: number;
-  averageRating: string;
+  averageRating: number;
   totalRatings: number;
+
   createdAt: string;
   updatedAt: string;
-  __v: number;
   lastLoginAt: string;
-  address: Address;
-};
 
-export interface Address {
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-  pincode: string;
-};
+  legalDetails: LegalDetails;
+  address: Address;
+}
+
+export interface CompanyProfileResponse {
+  success: boolean;
+  data: CompanyProfile;
+}
