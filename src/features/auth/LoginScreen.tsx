@@ -68,7 +68,8 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     
     }catch(error: any){
         console.error('Error while login : ', error);
-        Alert.alert('Login failed', error?.message || error?.response?.message || 'Something went wrong' )
+        Alert.alert('Login failed', error?.message || error?.response?.message || 'Something went wrong' );
+        setLoading(false);
     }
   };
 

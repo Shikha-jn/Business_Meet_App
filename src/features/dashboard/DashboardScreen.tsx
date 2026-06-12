@@ -46,6 +46,7 @@ const DashboardScreen = () => {
       const data = await getCompanyProfile();
 
       setProfile(data);
+      console.log('Profile data:', profile?.companyName);
     } catch (error) {
       console.log(error);
     } finally {
@@ -100,7 +101,8 @@ const DashboardScreen = () => {
           <InfoRow icon="mail" label="Email" value={profile?.email || ''} />
           <InfoRow icon="phone" label="Phone" value={profile?.phone || ''} />
           <InfoRow icon="person" label="Contact Person" value={profile?.contactPersonName || ''} />
-          <InfoRow icon="location" label="Address" value={profile?.address || ''} isLast />
+          <InfoRow icon="location" label="Address" value={`${profile?.address?.street ?? ''}, ${profile?.address?.city ?? ''
+            }, ${profile?.address?.state ?? ''}`} isLast />
         </Card>
       </ScrollView>
     </SafeAreaView>

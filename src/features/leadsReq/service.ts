@@ -7,13 +7,7 @@ export const getLeadRequirements = async (
   limit = 10,
 ): Promise<LeadRequirementsResponse> => {
   const response = await api.get(
-    Endpoints.GetLeadReq,
-    {
-      params: {
-        page,
-        limit,
-      },
-    },
+    `${Endpoints.GetLeadReq}?page=${page}&limit=${limit}`,
   );
 
   return response.data.data;
