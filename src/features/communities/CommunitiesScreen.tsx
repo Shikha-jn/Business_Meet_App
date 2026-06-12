@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
   ScrollView,
   View,
   Text,
@@ -13,6 +12,7 @@ import SearchBar from '../../components/SearchBar';
 import EmptyState from '../../components/EmptyState';
 import Colors from '../../theme/colors';
 import shared from '../../theme/styles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Community {
   id: string;
