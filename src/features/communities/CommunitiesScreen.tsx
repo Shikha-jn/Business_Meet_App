@@ -22,23 +22,11 @@ interface Community {
   icon: string;
 }
 
-const ALL_COMMUNITIES: Community[] = [
-  { id: '1', name: 'Technology Innovators', members: '1.2K', online: 56, icon: '💻' },
-  { id: '2', name: 'Business Growth',       members: '890',  online: 34, icon: '📈' },
-  { id: '3', name: 'Healthcare Partners',   members: '567',  online: 23, icon: '🏥' },
-  { id: '4', name: 'Startup Network',       members: '2.1K', online: 78, icon: '🚀' },
-  { id: '5', name: 'Marketing Profs',       members: '743',  online: 29, icon: '📣' },
-];
-
 type TabKey = 'my' | 'all';
 
 const CommunitiesScreen: React.FC = () => {
   const [tab, setTab] = useState<TabKey>('my');
   const [search, setSearch] = useState('');
-
-  const filteredAll = ALL_COMMUNITIES.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()),
-  );
 
   return (
     <SafeAreaView style={shared.screen}>
@@ -73,26 +61,10 @@ const CommunitiesScreen: React.FC = () => {
             description="Browse all communities to join"
           />
         ) : (
-          <FlatList
-            data={filteredAll}
-            keyExtractor={item => item.id}
-            scrollEnabled={false}
-            renderItem={({ item }) => (
-              <View style={styles.communityRow}>
-                <View style={styles.communityIcon}>
-                  <Text style={{ fontSize: 22 }}>{item.icon}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.communityName}>{item.name}</Text>
-                  <Text style={styles.communitySub}>
-                    {item.members} members • {item.online} online
-                  </Text>
-                </View>
-                <TouchableOpacity style={styles.joinBtn}>
-                  <Text style={styles.joinBtnText}>Join</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+          <EmptyState
+            icon="👥"
+            title="No communities Avaliable"
+            description="Check back later"
           />
         )}
       </ScrollView>

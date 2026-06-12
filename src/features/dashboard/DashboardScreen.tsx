@@ -71,15 +71,15 @@ const DashboardScreen = () => {
         {/* Quick stat tiles */}
         <View style={styles.quickGrid}>
           <QuickCard iconBg={Colors.greenLight} iconName="shield" iconColor={Colors.green} label="Verification">
-            <Badge label="✓ Verified" variant="green" />
+            <Badge label={profile?.verificationStatus || ''} variant="green" />
           </QuickCard>
 
           <QuickCard iconBg="#EEF2FF" iconName="chart" iconColor={Colors.purple} label="Profile">
-            <Text style={[styles.quickValue, { color: Colors.green }]}>68%</Text>
+            <Text style={[styles.quickValue, { color: Colors.green }]}>{profile?.profileCompleteness}%</Text>
           </QuickCard>
 
           <QuickCard iconBg="#FDF4FF" iconName="users" iconColor={Colors.purple} label="Subscription Plan">
-            <Text style={[styles.quickValue, { color: Colors.text }]}>Free</Text>
+            <Text style={[styles.quickValue, { color: Colors.text }]}>{profile?.subscriptionPlan}</Text>
           </QuickCard>
 
           <QuickCard iconBg="#FFF7ED" iconName="building" iconColor={Colors.orange} label="All Companies">
